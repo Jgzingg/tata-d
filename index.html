@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Você ainda gosta de Thauã?</title>
+<style>
+  :root{
+    --bg:#fff6fb;
+    --card:#ffffff;
+    --accent:#ff6b98;
+    --accent2:#ff9ac2;
+    --green1:#56ab2f;
+    --green2:#a8e063;
+    --shadow: 0 8px 30px rgba(33,33,33,0.08);
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  html,body{height:100%;margin:0;background:linear-gradient(135deg,#fff6fb 0%, #f0f8ff 100%);}
+  .center{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+  }
+  .card{
+    width:100%;
+    max-width:520px;
+    background:var(--card);
+    border-radius:18px;
+    padding:32px;
+    box-shadow:var(--shadow);
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  h1{
+    margin:0 0 10px 0;
+    font-size:1.6rem;
+    color:#222;
+  }
+  p.lead{
+    margin:0 0 22px 0;
+    color:#555;
+    font-size:1rem;
+  }
+  .hearts-line{
+    font-size:1.4rem;
+    margin-bottom:12px;
+  }
+  .actions{
+    position:relative;
+    height:160px;
+    margin-top:8px;
+  }
+  .btn{
+    cursor:pointer;
+    border:0;
+    padding:14px 26px;
+    border-radius:12px;
+    font-size:18px;
+    box-shadow: 0 6px 18px rgba(34,34,34,0.08);
+    transition: transform .18s ease, box-shadow .18s ease;
+    user-select:none;
+    -webkit-user-select:none;
+  }
+  .btn:active{ transform: scale(.98); }
+  .btn-sim{
+    background: linear-gradient(180deg,var(--green1),var(--green2));
+    color:white;
+  }
+  .btn-nao{
+    background: linear-gradient(180deg,#ff6b98,#ff9ac2);
+    color:white;
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    transition: transform .35s cubic-bezier(.2,.9,.3,1), left .35s, top .35s;
+    will-change:left,top,transform;
+  }
+  .btn-sim-inline{
+    display:inline-block;
+    margin-top:16px;
+  }
+  /* small helper so nao never overlaps sim too easily */
+  .hint{ font-size:.9rem;color:#888;margin-top:10px; }
+  /* overlay result */
+  .overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.85));
+    gap:12px;
+    flex-direction:column;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .35s ease;
+  }
+  .overlay.show{ opacity:1; pointer-events:auto; }
+  .result{
+    font-size:2rem;
+    color:#d6336c;
+    font-weight:700;
+    letter-spacing:1px;
+  }
+  /* flying hearts */
+  .heart{
+    position:absolute;
+    font-size:20px;
+    opacity:0;
+    transform: translateY(0) scale(0.6);
+    animation: floatUp 1600ms linear forwards;
+    pointer-events:none;
+  }
+  @keyframes floatUp{
+    0%{ opacity:1; transform: translateY(0) scale(0.7); }
+    40%{ transform: translateY(-80px) scale(1.0); }
+    100%{ transform: translateY(-220px) scale(0.9); opacity:0; }
+  }
+  /* playful footer */
+  .footer{ margin-top:18px;font-size:.85rem;color:#999;}
+  @media (max-width:420px){
+    .card{ padding:20px;border-radius:14px; }
+    .actions{ height:200px; }
+  }
+</style>
+</head>
+<body>
+  <div class="center">
+    <div class="card" id="card">
+      <div class="hearts-line">💖 💕 ❣️</div>
+      <h1>você ainda gosta de Thauã?</h1>
+      <p class="lead">Responda com o coração — mas cuidado com o "não"...</p>
+
+      <div class="actions" id="arena">
+        <button class="btn btn-sim btn-sim-inline" id="btnSim">Sim</button>
+        <button class="btn btn-nao" id="btnNao" aria-label="Não">Não</button>
+        <div class="overlay" id="overlay" role="dialog" aria-hidden="true">
+          <div class="result" id="resultText">eu sabia 💖</div>
+          <div class="hint">Fico feliz! ✨</div>
+        </div>
+      </div>
+
+      <div class="footer">feito com ❤️ — toque em "Sim" 😉</div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const btnNao = document.getElementById('btnNao');
+  const btnSim = document.getElementById('btnSim');
+  const arena = document.getElementById('arena');
+  const overlay = document.getElementById('overlay');
+  const card = document.getElementById('card');
+
+  // place "Não" initially off to the right a bit
+  resetNao();
+
+  // move when mouse enters, on mousedown and on touchstart
+  ['mouseenter','mousedown','touchstart'].forEach(ev=>{
+    btnNao.addEventListener(ev, evMove, {passive:true});
+  });
+  // if someone manages to click, prevent and move
+  btnNao.addEventListener('click', function(e){
+    e.preventDefault();
+    moveNao(true);
+  });
+
+  // on "Sim" click -> show overlay + hearts
+  btnSim.addEventListener('click', function(){
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden','false');
+    spawnHearts(12);
+  });
+
+  // close overlay if clicked anywhere on it
+  overlay.addEventListener('click', function(){
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden','true');
+  });
+
+  // when window resizes, keep nao inside
+  window.addEventListener('resize', clampNao);
+
+  function evMove(e){
+    // move away quickly
+    moveNao();
+  }
+
+  function resetNao(){
+    // center-right initial
+    positionBtn(btnNao, 70, 50);
+  }
+
+  function clampNao(){
+    // ensure current position is still valid; if not, move inside
+    const rect = arena.getBoundingClientRect();
+    const b = btnNao.getBoundingClientRect();
+    // if out of bounds, reposition
+    if (b.right > rect.right || b.left < rect.left || b.top < rect.top || b.bottom > rect.bottom){
+      moveNao(true);
+    }
+  }
+
+  function moveNao(forceCenter){
+    const arenaRect = arena.getBoundingClientRect();
+    const naoRect = btnNao.getBoundingClientRect();
+    const simRect = btnSim.getBoundingClientRect();
+
+    const padding = 10;
+    const maxW = arenaRect.width - naoRect.width - padding;
+    const maxH = arenaRect.height - naoRect.height - padding;
+
+    if (maxW <= 20 || maxH <= 20) {
+      // tiny area - simple jitter
+      jitter(btnNao);
+      return;
+    }
+
+    // try random positions until one doesn't overlap the "Sim" button too much
+    let attempts = 0;
+    let leftPerc, topPerc;
+    do {
+      leftPerc = Math.random() * maxW;
+      topPerc = Math.random() * maxH;
+      attempts++;
+      if (attempts > 30) break;
+    } while (overlapsSim(leftPerc + arenaRect.left, topPerc + arenaRect.top, naoRect.width, naoRect.height, simRect));
+
+    // convert to percentages to keep responsiveness simpler
+    const leftPx = leftPerc;
+    const topPx = topPerc;
+    // apply
+    positionBtnPx(btnNao, leftPx, topPx);
+  }
+
+  function overlapsSim(x, y, w, h, simRect){
+    const a1 = {left:x, top:y, right:x+w, bottom:y+h};
+    const a2 = {left:simRect.left, top:simRect.top, right:simRect.right, bottom:simRect.bottom};
+    const hor = a1.left < a2.right && a1.right > a2.left;
+    const ver = a1.top < a2.bottom && a1.bottom > a2.top;
+    return hor && ver;
+  }
+
+  function positionBtn(elem, leftPercent, topPercent){
+    // percentages relative to arena
+    const w = arena.clientWidth, h = arena.clientHeight;
+    const left = Math.max(6, Math.min(w - elem.offsetWidth - 6, Math.round(w * leftPercent / 100)));
+    const top = Math.max(6, Math.min(h - elem.offsetHeight - 6, Math.round(h * topPercent / 100)));
+    elem.style.left = left + 'px';
+    elem.style.top = top + 'px';
+  }
+
+  function positionBtnPx(elem, leftPx, topPx){
+    const left = Math.max(6, Math.min(arena.clientWidth - elem.offsetWidth - 6, Math.round(leftPx)));
+    const top = Math.max(6, Math.min(arena.clientHeight - elem.offsetHeight - 6, Math.round(topPx)));
+    elem.style.left = left + 'px';
+    elem.style.top = top + 'px';
+  }
+
+  function jitter(elem){
+    const dx = (Math.random()-0.5)*40;
+    const dy = (Math.random()-0.5)*40;
+    elem.style.transition = 'transform .25s ease';
+    elem.style.transform = `translate(${dx}px, ${dy}px)`;
+    setTimeout(()=> elem.style.transform = 'translate(0,0)', 250);
+    setTimeout(()=> elem.style.transition = '', 350);
+  }
+
+  function spawnHearts(n){
+    for(let i=0;i<n;i++){
+      createHeart(i);
+    }
+  }
+
+  function createHeart(i){
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerText = ['💖','💘','❣️','💕'][Math.floor(Math.random()*4)];
+    // random start position near "Sim" button
+    const sRect = btnSim.getBoundingClientRect();
+    const aRect = arena.getBoundingClientRect();
+    const startX = sRect.left - aRect.left + (Math.random()*sRect.width);
+    const startY = sRect.top - aRect.top + (Math.random()*sRect.height/2);
+    heart.style.left = (startX - 10) + 'px';
+    heart.style.top = (startY - 10) + 'px';
+    heart.style.fontSize = (12 + Math.random()*18) + 'px';
+    heart.style.animationDuration = (1200 + Math.random()*800) + 'ms';
+    arena.appendChild(heart);
+    // remove after anim
+    setTimeout(()=> heart.remove(), 2000 + Math.random()*800);
+  }
+
+  // ensure initial positions after fonts/render
+  setTimeout(()=> {
+    // place sim centered bottom-ish
+    const simLeft = Math.round((arena.clientWidth - btnSim.offsetWidth)/2);
+    const simTop = Math.round(arena.clientHeight - btnSim.offsetHeight - 12);
+    positionBtnPx(btnSim, simLeft, simTop);
+    // nao somewhere else
+    moveNao(true);
+  }, 80);
+
+})();
+</script>
+</body>
+</html>
