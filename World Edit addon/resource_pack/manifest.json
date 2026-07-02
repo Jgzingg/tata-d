@@ -1,0 +1,16 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "WorldEdit Addon - Resource Pack",
+    "description": "Textures and resources for WorldEdit addon (1.20.0+)",
+    "version": [1, 1, 0],
+    "min_engine_version": [1, 20, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "b6b97f37-1dc5-5226-c9f9-8f7e8d1f7f7f",
+      "version": [1, 1, 0]
+    }
+  ]
+}

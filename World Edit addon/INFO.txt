@@ -1,0 +1,68 @@
+═══════════════════════════════════════════════════════════════════
+   🎮 WORLDEDIT ADDON PARA MINECRAFT BEDROCK EDITION 🎮
+═══════════════════════════════════════════════════════════════════
+
+📦 INFORMAÇÕES DO ADDON
+
+  Nome:          WorldEdit Addon
+  Versão:        1.0.0
+  Autor:         jgzingg
+  Data:          2026-07-02
+  Plataforma:    Minecraft Bedrock Edition
+
+═══════════════════════════════════════════════════════════════════
+
+✨ RECURSOS PRINCIPAIS
+
+  ✓ Sistema de Seleção com Wand
+  ✓ Clipoard (Copy/Paste)
+  ✓ 20 Comandos Completos
+  ✓ Undo/Redo
+  ✓ Operações em Batch
+  ✓ Textura Customizada da Wand
+
+═══════════════════════════════════════════════════════════════════
+
+📋 CONTEÚDO DO ADDON
+
+  behavior_pack/     - Scripts e comandos (JavaScript)
+  resource_pack/     - Texturas e modelos
+  README.md          - Documentação completa
+  SETUP.md           - Guia de instalação
+  CONFIG_REFERENCE.md - Referência de configuração
+  DEVELOPER.md       - Guia para desenvolvedores
+  QUICKREF.md        - Referência rápida
+  INDEX.md           - Índice do projeto
+
+═══════════════════════════════════════════════════════════════════
+
+🚀 INSTALAÇÃO RÁPIDA
+
+  1. Ative os recursos experimentais:
+     Settings → Experiments
+     ✓ Holiday Creator Features
+     ✓ Additional Modding Capabilities
+
+  2. Extraia este arquivo .mcaddon no Minecraft
+
+  3. Ative tanto o Behavior Pack quanto o Resource Pack
+
+  4. Digite /whelp para ver todos os comandos
+
+═══════════════════════════════════════════════════════════════════
+
+📞 SUPORTE
+
+  Para dúvidas, consulte:
+  - README.md (Visão geral completa)
+  - SETUP.md (Instalação passo-a-passo)
+  - QUICKREF.md (Referência rápida de comandos)
+
+═══════════════════════════════════════════════════════════════════
+
+⚖️ LICENÇA
+
+  Este addon foi criado para Minecraft Bedrock Edition.
+  Use livremente em seus mundos e projetos.
+
+═══════════════════════════════════════════════════════════════════

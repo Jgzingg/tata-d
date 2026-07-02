@@ -1,0 +1,9 @@
+{
+  "format_version": "1.16.100",
+  "items": {
+    "minecraft:diamond_axe": {
+      "icon": "wand",
+      "foil": false
+    }
+  }
+}

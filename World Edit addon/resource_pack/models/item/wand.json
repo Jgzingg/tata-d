@@ -1,0 +1,12 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "minecraft:diamond_axe",
+      "category": "equipment"
+    },
+    "components": {
+      "minecraft:icon": "textures/items/wand"
+    }
+  }
+}

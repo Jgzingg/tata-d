@@ -1,0 +1,6 @@
+{
+  "resource_pack_name": "WorldEdit Addon",
+  "textures": {
+    "items/wand": "textures/items/wand"
+  }
+}
