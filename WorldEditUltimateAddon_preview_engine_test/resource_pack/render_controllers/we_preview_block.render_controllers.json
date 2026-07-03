@@ -9,7 +9,7 @@
         }
       ],
       "textures": [
-        "query.variant == 1 ? Texture.invalid : query.variant == 2 ? Texture.replace : Texture.valid"
+        "Array.query.variant == 1 ? Texture.invalid : Array.query.variant == 2 ? Texture.replace : Texture.valid"
       ]
     }
   }
