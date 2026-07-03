@@ -1,0 +1,76 @@
+{
+  "format_version": "1.20.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "we:preview_block",
+      "is_spawnable": false,
+      "is_summonable": false,
+      "is_experimental": false
+    },
+    "component_groups": {
+      "we:valid": {
+        "minecraft:variant": { "value": 0 }
+      },
+      "we:invalid": {
+        "minecraft:variant": { "value": 1 }
+      },
+      "we:replace": {
+        "minecraft:variant": { "value": 2 }
+      }
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": [ "we_preview" ]
+      },
+      "minecraft:collision_box": {
+        "width": 0,
+        "height": 0
+      },
+      "minecraft:physics": {
+        "has_collision": false,
+        "has_gravity": false
+      },
+      "minecraft:pushable": {
+        "is_pushable": false,
+        "is_pushable_by_piston": false
+      },
+      "minecraft:damage_sensor": {
+        "triggers": {
+          "cause": "all",
+          "deals_damage": false
+        }
+      }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "add": {
+          "component_groups": [ "we:valid" ]
+        }
+      },
+      "we:state_valid": {
+        "remove": {
+          "component_groups": [ "we:invalid", "we:replace" ]
+        },
+        "add": {
+          "component_groups": [ "we:valid" ]
+        }
+      },
+      "we:state_invalid": {
+        "remove": {
+          "component_groups": [ "we:valid", "we:replace" ]
+        },
+        "add": {
+          "component_groups": [ "we:invalid" ]
+        }
+      },
+      "we:state_replace": {
+        "remove": {
+          "component_groups": [ "we:valid", "we:invalid" ]
+        },
+        "add": {
+          "component_groups": [ "we:replace" ]
+        }
+      }
+    }
+  }
+}

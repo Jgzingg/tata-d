@@ -1,0 +1,23 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "we:preview_block",
+      "materials": {
+        "default": "entity_alphablend"
+      },
+      "textures": {
+        "valid": "textures/entity/we_preview_valid",
+        "invalid": "textures/entity/we_preview_invalid",
+        "replace": "textures/entity/we_preview_replace"
+      },
+      "geometry": {
+        "default": "geometry.we_preview_block"
+      },
+      "render_controllers": [ "controller.render.we_preview_block" ],
+      "spawn_egg": {
+        "texture": "we_preview_valid"
+      }
+    }
+  }
+}

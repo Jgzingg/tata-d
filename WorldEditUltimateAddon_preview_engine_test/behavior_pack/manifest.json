@@ -1,0 +1,45 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "WorldEdit Addon v1.4.0",
+    "description": "A powerful and stable block editing tool for Minecraft Bedrock Edition (v1.4.0)",
+    "uuid": "3203ade9-b8f4-4a6d-9ada-989884c34292",
+    "version": [
+      1,
+      4,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      110
+    ]
+  },
+  "modules": [
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "a5a96e26-0cb4-4115-b8e2-7e6d7c0e6e6e",
+      "entry": "scripts/main.js",
+      "version": [
+        1,
+        4,
+        0
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.7.0"
+    },
+    {
+      "uuid": "41959bfe-257a-42b4-9ded-d2bff02a7eff",
+      "version": [
+        1,
+        4,
+        0
+      ]
+    }
+  ]
+}

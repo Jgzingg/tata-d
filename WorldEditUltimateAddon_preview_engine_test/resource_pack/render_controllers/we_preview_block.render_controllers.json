@@ -1,0 +1,16 @@
+{
+  "format_version": "1.10.0",
+  "render_controllers": {
+    "controller.render.we_preview_block": {
+      "geometry": "Geometry.default",
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "query.variant == 1 ? Texture.invalid : query.variant == 2 ? Texture.replace : Texture.valid"
+      ]
+    }
+  }
+}
