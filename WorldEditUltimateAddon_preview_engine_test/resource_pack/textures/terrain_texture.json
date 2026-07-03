@@ -1,0 +1,15 @@
+{
+  "resource_pack_name": "WorldEdit Addon",
+  "texture_name": "atlas.terrain",
+  "texture_data": {
+    "we_preview_valid": {
+      "textures": "textures/entity/we_preview_valid"
+    },
+    "we_preview_invalid": {
+      "textures": "textures/entity/we_preview_invalid"
+    },
+    "we_preview_replace": {
+      "textures": "textures/entity/we_preview_replace"
+    }
+  }
+}

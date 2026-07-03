@@ -81,13 +81,18 @@ class PreviewRenderer {
     const wanted = new Set();
     let queued = 0;
 
-    session.scanJob = blockScanner.scanAreaByChunk(bounds.min, bounds.max, player.dimension, CONFIG.PREVIEW_SCAN_BATCH_SIZE ?? 256);
+    // Clear previous spawn queue before rebuilding
+    session.spawnQueue.length = 0;
 
-    for (const batch of session.scanJob) {
+    const scanIterator = blockScanner.scanAreaByChunk(bounds.min, bounds.max, player.dimension, CONFIG.PREVIEW_SCAN_BATCH_SIZE ?? 256);
+
+    for (const batch of scanIterator) {
       for (const block of batch) {
         if (queued >= MAX_BLOCKS) break;
         const key = posKey(block.x, block.y, block.z);
         wanted.add(key);
+        
+        // Only add to spawn queue if entity doesn't already exist
         if (!session.entities.has(key)) {
           session.spawnQueue.push({
             key,
@@ -103,6 +108,7 @@ class PreviewRenderer {
       if (queued >= MAX_BLOCKS) break;
     }
 
+    // Mark entities for removal if they're no longer in the selection
     for (const [key, entity] of session.entities.entries()) {
       if (!wanted.has(key)) {
         session.removeQueue.push(entity);
