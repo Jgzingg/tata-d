@@ -1,12 +1,13 @@
 /**
  * Copy Command
- * Copy selection to clipboard
+ * Copy selection to clipboard using batch processing
  */
 
 import { Command } from "./Command.js";
 import { selectionManager } from "../selection/SelectionManager.js";
 import { clipboardManager } from "../clipboard/ClipboardManager.js";
 import { getMessage, CONFIG } from "../config.js";
+import { batchProcessor } from "../utils/BatchProcessor.js";
 
 export class CopyCommand extends Command {
   constructor() {
@@ -31,39 +32,65 @@ export class CopyCommand extends Command {
         return;
       }
 
-      this.sendMessage(player, getMessage("PREFIX") + getMessage("OPERATION_STARTING"));
+      const blockCount = selectionManager.getBlockCount(player.name);
+      if (blockCount > CONFIG.MAX_BLOCK_LIMIT) {
+        this.sendError(
+          player,
+          getMessage("BLOCK_LIMIT_EXCEEDED", {
+            max: CONFIG.MAX_BLOCK_LIMIT,
+            actual: blockCount
+          })
+        );
+        return;
+      }
 
       const bounds = selectionManager.getBounds(player.name);
       const blocks = [];
-      let blockCount = 0;
 
-      // Collect all blocks in selection
-      for (let x = bounds.min.x; x <= bounds.max.x; x++) {
-        for (let y = bounds.min.y; y <= bounds.max.y; y++) {
-          for (let z = bounds.min.z; z <= bounds.max.z; z++) {
-            try {
-              const dimension = world.getDimension(player.dimension.id);
-              const block = dimension.getBlock({ x, y, z });
-              blocks.push({
-                pos: { x, y, z },
-                blockType: block.typeId,
-                blockData: block
-              });
-              blockCount++;
-            } catch (error) {
-              // Skip blocks that can't be accessed
-            }
+      this.sendMessage(player, getMessage("OPERATION_STARTING"));
+
+      // Define block collection function for batch processor
+      let collectedBlocks = 0;
+      const processBlock = (position, worldRef) => {
+        try {
+          const dimension = worldRef.getDimension(player.dimension.id);
+          const block = dimension.getBlock(position);
+          if (block) {
+            blocks.push({
+              pos: position.clone(),
+              blockType: block.typeId,
+              blockData: null // Block data handled separately if needed
+            });
+            collectedBlocks++;
           }
+        } catch (error) {
+          // Skip blocks that can't be accessed
         }
-      }
+      };
 
-      // Copy to clipboard
-      clipboardManager.copyBlocks(player.name, blocks);
+      const onComplete = () => {
+        // Copy to clipboard after all blocks are collected
+        clipboardManager.copyBlocks(player.name, blocks);
+        this.sendSuccess(
+          player,
+          getMessage("CLIPBOARD_COPIED", { count: blocks.length })
+        );
+      };
 
-      this.sendSuccess(
-        player,
-        getMessage("CLIPBOARD_COPIED", { count: blockCount })
+      // Start batch operation
+      const operationId = batchProcessor.startOperation(
+        "copy",
+        bounds.min,
+        bounds.max,
+        world,
+        processBlock,
+        null, // No progress callback needed for copy
+        onComplete
       );
+
+      if (!operationId) {
+        this.sendError(player, "Failed to start copy operation");
+      }
     } catch (error) {
       console.error("Copy command error:", error);
       this.sendError(player, "Failed to copy selection");

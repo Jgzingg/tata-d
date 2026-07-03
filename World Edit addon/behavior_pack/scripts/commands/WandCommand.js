@@ -23,16 +23,34 @@ export class WandCommand extends Command {
     }
 
     try {
-      // Create wand item
-      const wandItem = new world.ItemStack(CONFIG.WAND_ITEM, 1);
-      
-      // Set custom name for wand
-      wandItem.nameTag = "§6WorldEdit Wand";
+      // Get player inventory
+      const inventory = player.getComponent("minecraft:inventory");
+      if (!inventory || !inventory.container) {
+        this.sendError(player, "Failed to access inventory");
+        return;
+      }
 
-      // Give wand to player
-      player.getComponent("minecraft:inventory").container.addItem(wandItem);
+      // Create wand item using correct API
+      const wandItem = inventory.container.getItem(inventory.container.size - 1);
       
-      this.sendSuccess(player, getMessage("WAND_RECEIVED"));
+      // If player already has a wand in main hand, don't give another
+      if (wandItem && wandItem.typeId === CONFIG.WAND_ITEM) {
+        this.sendMessage(player, "§6You already have a wand in your hand!");
+        return;
+      }
+
+      // Try to give the wand item
+      const success = inventory.container.addItem({
+        typeId: CONFIG.WAND_ITEM,
+        amount: 1,
+        nameTag: "§6WorldEdit Wand"
+      });
+
+      if (success) {
+        this.sendSuccess(player, getMessage("WAND_RECEIVED"));
+      } else {
+        this.sendError(player, "Inventory full! Clear space and try again.");
+      }
     } catch (error) {
       console.error("Wand command error:", error);
       this.sendError(player, "Failed to give wand");
