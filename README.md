@@ -1,8 +1,10 @@
 # World Edit Addon for Minecraft Bedrock
 
-> A modern, high-performance WorldEdit-inspired addon for Minecraft Bedrock Edition built with the latest Script API.
+> A modern WorldEdit-inspired addon for Minecraft Bedrock Edition built with the Bedrock Script API.
 
-> **Project Status:** 🚧 In Development
+> [!WARNING]  
+> **Status: Archived / Discontinued**  
+> This project has reached its end of life and is no longer actively maintained. It remains publicly accessible as an open-source architecture reference for Bedrock Script API tools and batch region manipulation algorithms.
 
 ---
 
